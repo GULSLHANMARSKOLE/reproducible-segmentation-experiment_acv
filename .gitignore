@@ -1,0 +1,47 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ---- Virtual environments / local env files ----
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.*
+
+# ---- Editors / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- Dataset (never commit VOC images, masks or archives) ----
+data/*
+!data/.gitkeep
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# ---- Model checkpoints and large generated artifacts ----
+*.pt
+*.pth
+*.ckpt
+*.onnx
+outputs/checkpoints/*
+!outputs/checkpoints/.gitkeep
+outputs/predictions/*
+!outputs/predictions/.gitkeep
+*.npy
+*.npz
+*.tmp
+*.log
+tmp/
+
+# NOTE: reports/ (Markdown reports, result tables, training-log CSVs and the selected
+# qualitative figures in reports/figures/) is intentionally NOT ignored.

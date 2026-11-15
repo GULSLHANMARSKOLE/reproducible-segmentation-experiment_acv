@@ -1,0 +1,52 @@
+# Central experiment configuration.
+# Every experimental setting used by train.py / evaluate.py / predict.py is read from here.
+# The ONLY architectural difference between the two models (dilation of the second
+# bottleneck convolution: 1 -> 2) is fixed in code on purpose:
+#   src/models/baseline.py  -> BOTTLENECK_DILATIONS = (1, 1)
+#   src/models/dilated.py   -> BOTTLENECK_DILATIONS = (1, 2)
+
+experiment:
+  name: reproducible_segmentation_experiment
+  seed: 42
+
+dataset:
+  name: pascal_voc_2012
+  root: data/VOCdevkit/VOC2012      # relative to project root (or an absolute path)
+  image_size: 256                   # images and masks are resized to image_size x image_size
+  num_classes: 21
+  ignore_index: 255
+  train_split: train                # ImageSets/Segmentation/train.txt (official, 1,464 images)
+  val_split: val                    # ImageSets/Segmentation/val.txt   (official, 1,449 images)
+  mean: [0.485, 0.456, 0.406]       # ImageNet statistics
+  std: [0.229, 0.224, 0.225]
+  horizontal_flip_probability: 0.5  # training split only; validation uses no augmentation
+
+training:
+  batch_size: 8
+  epochs: 30
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  optimizer: AdamW
+  loss: CrossEntropyLoss
+  num_workers: 0
+  deterministic: true               # torch deterministic algorithms (warn_only) + cuDNN deterministic
+  stopping_rule: fixed_30_epochs    # no early stopping; always exactly `epochs` completed epochs
+
+model:
+  base_channels: 32                 # encoder 32/64/128, bottleneck 256, decoder 128/64/32
+  pretrained: false
+
+evaluation:
+  batch_size: 1                     # latency measurement batch size
+  warmup_iterations: 20
+  timed_iterations: 100
+  validation_batch_size: 8          # throughput batch size for per-epoch validation and final evaluation
+  num_success_examples: 4           # qualitative figure: best-segmented validation images
+  num_failure_examples: 4           # qualitative figure: worst-segmented validation images
+
+paths:                              # relative to project root (or absolute)
+  checkpoints_dir: outputs/checkpoints
+  predictions_dir: outputs/predictions
+  training_logs_dir: reports/training_logs
+  results_dir: reports/results
+  figures_dir: reports/figures
